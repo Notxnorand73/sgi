@@ -2,37 +2,25 @@ import sys
 import json
 
 def compile(jsonlist):
-    '''
-    int -> int
-    'stop' -> 256
-    '''
     binary = []
     for i in jsonlist:
         if isinstance(i, int):
             binary.append(i)
         elif i == 'stop':
-            binary.append(256)
-    '''turn integers into signed 2 bytes represented as a string'''
+            binary.append(1 << 14)
     compiled = []
     for i in binary:
-        if i == 256:
-            compiled.append('00000001')
-            compiled.append('00000000')
-        else:
-            if i < 0:
-                i = (1 << 16) + i
-            compiled.append(format(i, '016b'))
-    return ''.join(str(b) for b in compiled)
+        if i < 0:
+            i = (1 << 16) + i
+        compiled.append(format(i, '016b'))
+    return hex(''.join(str(b) for b in compiled))
 
-def decompile(binary):
-    '''
-    int -> int
-    'stop' -> 256
-    '''
+def decompile(hexc):
+    binary = bin(hexc) 
     jsonlist = []
     for i in range(0, len(binary), 16):
         chunk = binary[i:i+16]
-        if chunk == '0000000100000000':
+        if chunk == '0010000000000000':
             jsonlist.append('stop')
         else:
             value = int(chunk, 2)
@@ -40,6 +28,23 @@ def decompile(binary):
                 value -= (1 << 16)
             jsonlist.append(value)
     return jsonlist
+
+def hex(binary):
+    temp = '012345789abcdef'
+    returnstr = []
+    for i in range(0, len(binary), 4):
+        chunk = binary[i:i+4]
+        integer = int(chunk, 2)
+        returnstr.append(temp[integer])
+    return ''.join(returnstr)
+
+def bin(hex):
+    temp = '012345789abcdef'
+    returnstr = []
+    for i in hex:
+        returnstr.append(temp.index(i))
+    return ''.join(format(i, '04b') for i in returnstr)
+        
 
 if __name__ == "__main__":
     if len(sys.argv) > 3:
