@@ -30,7 +30,7 @@ def decompile(hexc):
     return jsonlist
 
 def hex(binary):
-    temp = '012345789abcdef'
+    temp = '0123456789abcdef'
     returnstr = []
     for i in range(0, len(binary), 4):
         chunk = binary[i:i+4]
@@ -39,7 +39,7 @@ def hex(binary):
     return ''.join(returnstr)
 
 def bin(hex):
-    temp = '012345789abcdef'
+    temp = '0123456789abcdef'
     returnstr = []
     for i in hex:
         returnstr.append(temp.index(i))
