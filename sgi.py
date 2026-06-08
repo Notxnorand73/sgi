@@ -20,10 +20,10 @@ def decompile(hexc):
     jsonlist = []
     for i in range(0, len(binary), 16):
         chunk = binary[i:i+16]
-        if chunk == '0010000000000000':
+        value = int(chunk, 2)
+        if value == 1 << 14:
             jsonlist.append('stop')
         else:
-            value = int(chunk, 2)
             if value >= (1 << 15):
                 value -= (1 << 16)
             jsonlist.append(value)
